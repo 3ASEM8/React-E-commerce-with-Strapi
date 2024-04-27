@@ -2,6 +2,7 @@ import { useTheme } from "@emotion/react";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   Dialog,
   IconButton,
@@ -24,7 +25,9 @@ function Main() {
   const theme = useTheme();
 
   const handleAlignment = (event, newValue) => {
-    setmyData(newValue);
+    if (newValue !== null) {
+      setmyData(newValue);
+    }
   };
 
   const [open, setOpen] = useState(false);
@@ -43,18 +46,29 @@ function Main() {
 
   const { data, error, isLoading } = useGetproductByNameQuery(myData);
 
+  const [clickProduct, setclickProduct] = useState({});
+
   if (isLoading) {
-    return <Typography variant="h6">LOADING...................</Typography>;
+    return (
+      <Box sx={{ textAlign: "center", py: 11 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
     // @ts-ignore
-    return <Typography variant="h6">{error.message}</Typography>;
+    return (
+      <Container
+        sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      >
+        <Typography variant="h6">{error.message}</Typography>
+        <Typography variant="h6">erooooooooooooooooooooooooooooooor</Typography>
+      </Container>
+    );
   }
 
   if (data) {
-    console.log(data.data);
-
     return (
       <Container sx={{ mt: 9 }}>
         <Stack
@@ -120,7 +134,7 @@ function Main() {
           {data.data.map((item) => {
             return (
               <Card
-                key={item}
+                key={item.id}
                 sx={{
                   maxWidth: 333,
                   mt: 6,
@@ -161,7 +175,11 @@ function Main() {
 
                 <CardActions sx={{ justifyContent: "space-between" }}>
                   <Button
-                    onClick={handleClickOpen}
+                    onClick={() => {
+                      handleClickOpen();
+                      setclickProduct(item);
+                      console.log(clickProduct);
+                    }}
                     size="small"
                     sx={{ textTransform: "capitalize" }}
                   >
@@ -199,7 +217,7 @@ function Main() {
             <Close />
           </IconButton>
 
-          <ProductDetails />
+          <ProductDetails clickProduct={clickProduct} />
         </Dialog>
       </Container>
     );

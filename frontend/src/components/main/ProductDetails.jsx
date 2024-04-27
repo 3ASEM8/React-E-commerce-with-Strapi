@@ -1,7 +1,18 @@
+/* eslint-disable react/prop-types */
 import { AddShoppingCartOutlined } from "@mui/icons-material";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
+import { useState } from "react";
 
-function ProductDetails() {
+function ProductDetails({ clickProduct }) {
+  const [selectedImg, setselectedImg] = useState(0);
+
   return (
     <Box
       sx={{
@@ -12,19 +23,24 @@ function ProductDetails() {
       }}
     >
       <Box display={"flex"}>
-        <img width={400} src="public\images\banner-16.jpg" alt="" />
+        <img
+          width={400}
+          src={
+            clickProduct.attributes.pruductimg.data[selectedImg].attributes.url
+          }
+          alt=""
+        />
       </Box>
 
       <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
-        <Typography variant="h5">WOMENs FASHION</Typography>
+        <Typography variant="h5">
+          {clickProduct.attributes.productTitle}
+        </Typography>
         <Typography fontSize={"22px"} color="crimson" my={0.4}>
-          $12.99
+          {clickProduct.attributes.producPrice}
         </Typography>
         <Typography variant="body1">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia
-          consequatur, velit, temporibus repudiandae placeat illo debitis id
-          similique facilis iste ducimus maiores assumenda dolore porro minus ut
-          molestias soluta repellat!
+          {clickProduct.attributes.productDescription}
         </Typography>
 
         <Stack
@@ -33,19 +49,44 @@ function ProductDetails() {
           gap={1}
           my={2}
         >
-          {["public/images/banner-16.jpg", "public/images/banner-17.jpg"].map(
-            (item) => {
+          <ToggleButtonGroup
+            value={selectedImg}
+            exclusive
+            sx={{
+              ".Mui-selected": {
+                border: "1px solid royalblue !important",
+                borderRadius: "5px !important",
+                opacity: "1",
+                backgroundColor: "initial",
+              },
+            }}
+          >
+            {clickProduct.attributes.pruductimg.data.map((item, idx) => {
               return (
-                <img
-                  style={{ borderRadius: 3 }}
-                  width={90}
-                  key={item}
-                  src={item}
-                  alt=""
-                />
+                <ToggleButton
+                  key={item.id}
+                  value={idx}
+                  aria-label="left aligned"
+                  sx={{
+                    width: "110px",
+                    height: "110px",
+                    mx: 1,
+                    p: 0,
+                    opacity: "0.5",
+                  }}
+                >
+                  <img
+                    onClick={() => setselectedImg(idx)}
+                    style={{ borderRadius: 3 }}
+                    width={"100%"}
+                    height={"100%"}
+                    src={item.attributes.url}
+                    alt=""
+                  />
+                </ToggleButton>
               );
-            }
-          )}
+            })}
+          </ToggleButtonGroup>
         </Stack>
 
         <Button
